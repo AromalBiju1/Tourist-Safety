@@ -69,18 +69,20 @@ npm run dev
 
 ## ⚙️ Configuration
 
+> ⚠️ **Note**: Values below are examples only. Replace with your own secrets in `.env` files (which are gitignored).
+
 ### Backend (`tourist-safety-backend/.env`)
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/tourist_safety
+DATABASE_URL=postgresql://user:password@localhost:5432/tourist_safety
 USE_SQLITE=true  # Set to false for PostgreSQL
-JWT_SECRET_KEY=your-secret-key
-GOOGLE_CLIENT_ID=your-google-client-id
+JWT_SECRET_KEY=generate-a-random-32-char-string
+GOOGLE_CLIENT_ID=from-google-cloud-console
 ```
 
 ### Frontend (`tourist-safety-frontend/.env.local`)
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=from-google-cloud-console
 ```
 
 ## 📁 Project Structure
