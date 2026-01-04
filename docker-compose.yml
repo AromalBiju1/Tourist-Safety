@@ -4,9 +4,9 @@ services:
     image: postgres:15-alpine
     container_name: tourist_safety_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: tourist_safety
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tourist_safety}
     ports:
       - "5432:5432"
     volumes:
@@ -24,15 +24,16 @@ services:
       dockerfile: Dockerfile
     container_name: tourist_safety_api
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/tourist_safety
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-tourist_safety}
       - USE_SQLITE=false
-      - DEBUG=true
+      - DEBUG=${DEBUG:-true}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-in-production}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
-    # Note: Removed volume mount to prevent overwriting built code
 
   # Next.js Frontend  
   frontend:
@@ -41,12 +42,11 @@ services:
       dockerfile: Dockerfile
     container_name: tourist_safety_web
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     ports:
       - "3000:3000"
     depends_on:
       - backend
-    # Note: Removed volume mount for production-like build
 
 volumes:
   postgres_data:
