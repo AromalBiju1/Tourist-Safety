@@ -1,0 +1,52 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: tourist_safety_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tourist_safety
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./tourist-safety-backend
+      dockerfile: Dockerfile
+    container_name: tourist_safety_api
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/tourist_safety
+      - USE_SQLITE=false
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    # Note: Removed volume mount to prevent overwriting built code
+
+  # Next.js Frontend  
+  frontend:
+    build:
+      context: ./tourist-safety-frontend
+      dockerfile: Dockerfile
+    container_name: tourist_safety_web
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    # Note: Removed volume mount for production-like build
+
+volumes:
+  postgres_data:
