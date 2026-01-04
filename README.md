@@ -22,7 +22,7 @@ A Tourist Safety & Assistance platform for India with 697 districts, ML-powered 
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/tourist-safety.git
+git clone https://github.com/AromalBiju1/tourist-safety.git
 cd tourist-safety
 
 # Start all services
